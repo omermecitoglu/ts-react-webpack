@@ -1,12 +1,15 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const autoprefixer = require("autoprefixer")
 const path = require("path");
+const autoprefixer = require("autoprefixer");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
-const bundlePlugins = (mode) => {
+
+const bundlePlugins = mode => {
   const plugins = [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: "React App",
     }),
@@ -34,9 +37,11 @@ module.exports = (env, argv) => ({
   target: "web",
   plugins: bundlePlugins(argv.mode),
   optimization: {
-    minimizer: [new TerserPlugin({
-      extractComments: false,
-    })],
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
+    ],
   },
   module: {
     rules: [
@@ -50,10 +55,10 @@ module.exports = (env, argv) => ({
             options: {
               postcssOptions: {
                 plugins: [
-                  autoprefixer
-                ]
-              }
-            }
+                  autoprefixer,
+                ],
+              },
+            },
           },
           "sass-loader",
         ],
@@ -79,7 +84,7 @@ module.exports = (env, argv) => ({
     port: 3000,
   },
   performance: {
-    maxAssetSize: 1 * 1024 * 1024,     // 1 MB in bytes
+    maxAssetSize: 1 * 1024 * 1024, // 1 MB in bytes
     maxEntrypointSize: 2 * 1024 * 1024, // 2 MB in bytes
   },
 });
